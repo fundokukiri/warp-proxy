@@ -13,7 +13,7 @@ Complete guide to set up and run Cloudflare WARP Proxy using Docker.
 ### Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/fundokukiri/cloudflare-warp-proxy-telegram.git
+git clone https://github.com/fundokukiri/cloudflare-local-proxy.git
 ```
 
 ### Step 2: Navigate to project directory
