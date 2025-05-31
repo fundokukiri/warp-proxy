@@ -130,7 +130,6 @@ docker rmi warp-proxy
 ```
 cloudflare-warp-proxy-telegram/
 ├── Dockerfile          # Docker image build file
-├── start.sh            # Service startup script
 ├── danted.conf         # SOCKS5 proxy configuration
 ├── exec.sh             # Initializing
 └── README.md           # This guide file
