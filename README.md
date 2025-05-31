@@ -19,7 +19,7 @@ git clone https://github.com/fundokukiri/cloudflare-local-proxy.git
 ### Step 2: Navigate to project directory
 
 ```bash
-cd cloudflare-warp-proxy-telegram
+cd cloudflare-local-proxy
 ```
 
 ### Step 3: Build Docker image
