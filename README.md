@@ -27,6 +27,20 @@ cd cloudflare-local-proxy
 ```bash
 docker build -t warp-proxy .
 ```
+#### 🔧 Build Troubleshooting
+
+If the standard build command fails, try these alternatives:
+
+**Option 1 - Use host network:**
+```bash
+docker build --network=host -t warp-proxy .
+```
+
+**Option 2 - Use custom DNS:**
+```bash
+docker build --network=default --dns=8.8.8.8 -t warp-proxy .
+```
+
 
 > ⏱️ **Note**: The build process may take 3-5 minutes depending on your network speed
 
