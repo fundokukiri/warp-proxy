@@ -172,7 +172,7 @@ connect_warp() {
 # Main execution starts here
 echo ""
 echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║${NC}                    ${YELLOW}WARP Proxy Service${NC}                     ${CYAN}║${NC}"
+echo -e "${CYAN}║${NC}                    ${YELLOW}WARP Proxy Service${NC}                        ${CYAN}║${NC}"
 echo -e "${CYAN}║${NC}                   Starting up components...                  ${CYAN}║${NC}"
 echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
 echo ""
@@ -249,8 +249,8 @@ fi
 
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║${NC}                    ${YELLOW}All Services Running${NC}                    ${GREEN}║${NC}"
-echo -e "${GREEN}║${NC}                  Monitoring system health...                ${GREEN}║${NC}"
+echo -e "${GREEN}║${NC}                    ${YELLOW}All Services Running${NC}                      ${GREEN}║${NC}"
+echo -e "${GREEN}║${NC}                  Monitoring system health...                 ${GREEN}║${NC}"
 echo -e "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
