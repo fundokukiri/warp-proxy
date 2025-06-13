@@ -85,7 +85,7 @@ register_warp() {
         log_success "WARP registration found"
         log_info "Registration details:"
         while IFS= read -r line; do
-            echo -e "  ${CYAN}│${NC} $line"
+            echo -e "\t\t\t\t  ${CYAN}│${NC} $line"
         done < /register-warp
         return 0
     fi
@@ -146,7 +146,7 @@ connect_warp() {
                 log_success "Connection verified and stable"
                 # Show status details
                 warp-cli --accept-tos status 2>/dev/null | while IFS= read -r line; do
-                    echo -e "  ${GREEN}│${NC} $line"
+                    echo -e "\t\t\t\t  ${GREEN}│${NC} $line"
                 done
             fi
             return 0
@@ -223,9 +223,9 @@ if ! connect_warp; then
     exit 1
 fi
 
-echo ""
-log_success "WARP service initialization completed"
-echo ""
+# echo ""
+log_success "\e[1;32mWARP service initialization completed\e[0m"
+# echo ""
 
 # Initialize other services
 log_info "Initializing proxy services..."
@@ -279,19 +279,38 @@ while true; do
     fi
     
     # Check WARP status periodically (every 5 cycles = 2.5 minutes)
-    if [ $((MONITOR_CYCLE % 5)) -eq 0 ]; then
+    test_urls=("https://1.1.1.1" "https://8.8.8.8" "https://google.com")
+    i=0
+    if [ $((MONITOR_CYCLE % 2)) -eq 0 ]; then
         if ! warp-cli --accept-tos status >/dev/null 2>&1; then
             log_warning "WARP connection lost"
             log_info "Attempting to reconnect..."
-            if connect_warp; then
-                log_success "WARP connection restored"
-            else
+
+            while true; do
+                warp-cli --accept-tos disconnect >/dev/null 2>&1
+                sleep 2
+                warp-cli --accept-tos connect >/dev/null 2>&1
+                sleep 3
+                
+                if curl -s --connect-timeout 5 --max-time 10 "${test_urls[$i]}" >/dev/null 2>&1; then
+                    log_success "WARP connection restored"
+                    break  
+                fi
+                
                 log_error "Failed to restore WARP connection"
-            fi
-        else
-            log_info "System health check: OK (Cycle #$MONITOR_CYCLE)"
+                
+                i=$((i + 1))
+                if [ $i -eq ${#test_urls[@]} ]; then
+                    i=0
+                    sleep 10
+                else
+                    sleep 5
+                fi
+            done
+        elif [ $((MONITOR_CYCLE % 150)) -eq 0 ]; then
+            log_info "System health check: OK"
         fi
     fi
     
-    sleep 30
+    sleep 1
 done

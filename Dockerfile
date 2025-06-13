@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     lsb-release \
     dante-server \
     iproute2 \
+    iproute2 \
     iptables
 
 RUN curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg && \

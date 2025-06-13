@@ -50,6 +50,10 @@ docker build --network=default --dns=8.8.8.8 -t warp-proxy .
 docker run -dit --cap-add=NET_ADMIN --device /dev/net/tun -p 1080:1080 warp-proxy
 ```
 
+```bash
+docker run -dit --cap-add=NET_ADMIN --device /dev/net/tun -p 1080:1080 --restart unless-stopped warp-proxy
+```
+
 ## 📊 Status Monitoring
 
 ### View container logs
