@@ -256,59 +256,47 @@ echo ""
 
 # Monitor processes
 MONITOR_CYCLE=0
+check_connection=1
 while true; do
     MONITOR_CYCLE=$((MONITOR_CYCLE + 1))
-    
-    # Check if warp-svc is still running
-    if ! kill -0 $WARP_SVC_PID 2>/dev/null; then
-        log_warning "WARP service daemon stopped unexpectedly"
-        log_info "Restarting WARP service daemon..."
-        nohup warp-svc > /var/log/warp-svc.log 2>&1 &
-        WARP_SVC_PID=$!
-        sleep 5
-        log_success "WARP service daemon restarted (PID: $WARP_SVC_PID)"
-    fi
-    
-    # Check if danted is still running (if it was started)
-    if [ -n "$DANTED_PID" ] && ! kill -0 $DANTED_PID 2>/dev/null; then
-        log_warning "SOCKS5 proxy stopped unexpectedly"
-        log_info "Restarting SOCKS5 proxy..."
-        danted -f /etc/danted.conf &
-        DANTED_PID=$!
-        log_success "SOCKS5 proxy restarted (PID: $DANTED_PID)"
-    fi
-    
-    # Check WARP status periodically (every 5 cycles = 2.5 minutes)
-    test_urls=("https://1.1.1.1" "https://8.8.8.8" "https://google.com")
-    i=0
-    if [ $((MONITOR_CYCLE % 2)) -eq 0 ]; then
-        if ! warp-cli --accept-tos status >/dev/null 2>&1; then
-            log_warning "WARP connection lost"
-            log_info "Attempting to reconnect..."
 
-            while true; do
-                warp-cli --accept-tos disconnect >/dev/null 2>&1
-                sleep 2
-                warp-cli --accept-tos connect >/dev/null 2>&1
-                sleep 3
-                
-                if curl -s --connect-timeout 5 --max-time 10 "${test_urls[$i]}" >/dev/null 2>&1; then
-                    log_success "WARP connection restored"
-                    break  
-                fi
-                
-                log_error "Failed to restore WARP connection"
-                
-                i=$((i + 1))
-                if [ $i -eq ${#test_urls[@]} ]; then
-                    i=0
-                    sleep 10
-                else
-                    sleep 5
-                fi
-            done
-        elif [ $((MONITOR_CYCLE % 150)) -eq 0 ]; then
-            log_info "System health check: OK"
+    if [ $((MONITOR_CYCLE % 60)) -eq 0 ]; then
+        # Check if warp-svc is still running
+        if ! kill -0 $WARP_SVC_PID 2>/dev/null; then
+            log_warning "WARP service daemon stopped unexpectedly"
+            log_info "Restarting WARP service daemon..."
+            nohup warp-svc > /var/log/warp-svc.log 2>&1 &
+            WARP_SVC_PID=$!
+            sleep 5
+            log_success "WARP service daemon restarted (PID: $WARP_SVC_PID)"
+        fi
+        
+        # Check if danted is still running (if it was started)
+        if [ -n "$DANTED_PID" ] && ! kill -0 $DANTED_PID 2>/dev/null; then
+            log_warning "SOCKS5 proxy stopped unexpectedly"
+            log_info "Restarting SOCKS5 proxy..."
+            danted -f /etc/danted.conf &
+            DANTED_PID=$!
+            log_success "SOCKS5 proxy restarted (PID: $DANTED_PID)"
+        fi
+    fi
+    if [ $((MONITOR_CYCLE % 5)) -eq 0 ]; then
+        status_output=$(warp-cli --accept-tos status 2>/dev/null)
+        if echo "$status_output" | grep -q "Status update: Connecting"; then
+            if [ $check_connection -eq 1 ] ;then
+                log_warning "WARP connection lost"
+                log_info "Attempting to reconnect..."
+                check_connection=0
+            fi
+        elif echo "$status_output" | grep -q "Status update: Connected"; then
+            if [ $check_connection -eq 0 ] ;then
+                check_connection=1
+                log_success "WARP connection restored"
+            elif [ $((MONITOR_CYCLE % 150)) -eq 0 ]; then
+                log_info "System health check: OK"
+            fi
+        else
+            log_error "Failed to restore WARP connection"
         fi
     fi
     
