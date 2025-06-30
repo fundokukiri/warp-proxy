@@ -1,4 +1,4 @@
-# Cloudflare WARP Proxy Setup Guide
+# Cloudflare WARP PROXY Setup Guide
 
 Complete guide to set up and run Cloudflare WARP Proxy using Docker.
 
