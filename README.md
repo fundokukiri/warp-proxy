@@ -152,27 +152,4 @@ cloudflare-warp-proxy-telegram/
 ├── exec.sh             # Initializing
 └── README.md           # This guide file
 ```
-
-## ⚡ Performance
-
-- **RAM**: ~100-200MB
-- **CPU**: Minimal (< 5%)
-- **Network**: Depends on usage traffic
-
-## 🔒 Security
-
-⚠️ **Important Notes**: 
-- This proxy runs without authentication
-- Should only be used on personal machines or trusted networks
-- Do not expose port 1080 to the public internet
-
-## 📞 Support
-
-If you encounter issues:
-1. Check container logs
-2. Ensure Docker has access to TUN device
-3. Verify internet connection
-
----
-
 **Happy proxying! 🎉**
